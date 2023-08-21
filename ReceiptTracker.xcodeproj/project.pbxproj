@@ -17,6 +17,8 @@
 		9435B00E2A7B0FDD00D0A1D2 /* TextRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9435B00D2A7B0FDD00D0A1D2 /* TextRecognizer.swift */; };
 		94E70EE62A8430500039ED7B /* ReceiptScan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E70EE52A8430500039ED7B /* ReceiptScan.swift */; };
 		94E70EE82A853ED80039ED7B /* ReceiptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E70EE72A853ED80039ED7B /* ReceiptView.swift */; };
+		94E70EEB2A8D78190039ED7B /* receipts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E70EEA2A8D78190039ED7B /* receipts.swift */; };
+		94E70EEF2A8D921E0039ED7B /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94E70EEE2A8D921E0039ED7B /* AppState.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +33,8 @@
 		9435B00D2A7B0FDD00D0A1D2 /* TextRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextRecognizer.swift; sourceTree = "<group>"; };
 		94E70EE52A8430500039ED7B /* ReceiptScan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScan.swift; sourceTree = "<group>"; };
 		94E70EE72A853ED80039ED7B /* ReceiptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptView.swift; sourceTree = "<group>"; };
+		94E70EEA2A8D78190039ED7B /* receipts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = receipts.swift; sourceTree = "<group>"; };
+		94E70EEE2A8D921E0039ED7B /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,16 +67,12 @@
 		942E669C2A6C846600622DC2 /* ReceiptTracker */ = {
 			isa = PBXGroup;
 			children = (
-				942E66AE2A6C9CD300622DC2 /* DocumentScanner.swift */,
-				942E669F2A6C846600622DC2 /* ContentView.swift */,
+				94E70EED2A8D916A0039ED7B /* Models */,
+				94E70EEC2A8D912C0039ED7B /* Views */,
+				94E70EE92A8D77F30039ED7B /* Services */,
 				942E669D2A6C846600622DC2 /* ReceiptTrackerApp.swift */,
 				942E66A12A6C846800622DC2 /* Assets.xcassets */,
 				942E66A32A6C846800622DC2 /* Preview Content */,
-				9435B0092A7B0A1500D0A1D2 /* ScanData.swift */,
-				9435B00B2A7B0B9D00D0A1D2 /* ScannerView.swift */,
-				9435B00D2A7B0FDD00D0A1D2 /* TextRecognizer.swift */,
-				94E70EE52A8430500039ED7B /* ReceiptScan.swift */,
-				94E70EE72A853ED80039ED7B /* ReceiptView.swift */,
 			);
 			path = ReceiptTracker;
 			sourceTree = "<group>";
@@ -83,6 +83,36 @@
 				942E66A42A6C846800622DC2 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		94E70EE92A8D77F30039ED7B /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				94E70EEA2A8D78190039ED7B /* receipts.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		94E70EEC2A8D912C0039ED7B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				94E70EE72A853ED80039ED7B /* ReceiptView.swift */,
+				942E66AE2A6C9CD300622DC2 /* DocumentScanner.swift */,
+				9435B00B2A7B0B9D00D0A1D2 /* ScannerView.swift */,
+				942E669F2A6C846600622DC2 /* ContentView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		94E70EED2A8D916A0039ED7B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				9435B0092A7B0A1500D0A1D2 /* ScanData.swift */,
+				9435B00D2A7B0FDD00D0A1D2 /* TextRecognizer.swift */,
+				94E70EE52A8430500039ED7B /* ReceiptScan.swift */,
+				94E70EEE2A8D921E0039ED7B /* AppState.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -156,10 +186,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				9435B00A2A7B0A1500D0A1D2 /* ScanData.swift in Sources */,
+				94E70EEF2A8D921E0039ED7B /* AppState.swift in Sources */,
 				94E70EE62A8430500039ED7B /* ReceiptScan.swift in Sources */,
 				942E66A02A6C846600622DC2 /* ContentView.swift in Sources */,
 				94E70EE82A853ED80039ED7B /* ReceiptView.swift in Sources */,
 				942E669E2A6C846600622DC2 /* ReceiptTrackerApp.swift in Sources */,
+				94E70EEB2A8D78190039ED7B /* receipts.swift in Sources */,
 				942E66AF2A6C9CD300622DC2 /* DocumentScanner.swift in Sources */,
 				9435B00E2A7B0FDD00D0A1D2 /* TextRecognizer.swift in Sources */,
 				9435B00C2A7B0B9D00D0A1D2 /* ScannerView.swift in Sources */,

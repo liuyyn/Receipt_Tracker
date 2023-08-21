@@ -10,38 +10,18 @@ import VisionKit
 
 struct ContentView: View {
     @State private var showScannerSheet = false
-    @State private var texts: [ScanData] = []
-    @State private var scans: [ReceiptScan] = []
+    @State var texts: [ScanData] = []
+    @State var scans: [ReceiptScan] = []
+    @Binding var receipts: [Receipt]
 
     var body: some View {
         NavigationStack {
             VStack {
                 
-                // display the list of receipts if there are any
-//                if texts.count > 0 {
-//                    List {
-//                        ForEach(texts) { text in
-//                            NavigationLink(destination: ScrollView {
-//                                Text(text.content)
-//                            }, label: {
-//                                Text(text.content).lineLimit(1)
-//                            })
-//                        }
-//                    }
-//                }
-//                else {
-//                    Text("No receipts yet")
-//                }
-                
-                if scans.count > 0 {
-                    
-//                    Image(uiImage: scans[0].cameraScan[0])
-                   
-                    List($scans) { $scan in
-                        
-                            NavigationLink(destination: ReceiptView(receipt: $scan)){
-                                Text(scan.id.uuidString)
-                        
+                if receipts.count > 0 {
+                    List($receipts) { $receipt in
+                        NavigationLink(destination: ReceiptView(receipt: $receipt)) {
+                            Text(receipt.id.uuidString)
                         }
                     }
                 }
@@ -70,12 +50,16 @@ struct ContentView: View {
             self.showScannerSheet = false
         }, saveReceipts: { scan in
             self.scans.append(ReceiptScan(cameraScan: scan))
+            
+            //append the new receipt to the state
+            receipts.append(Receipt(cameraScan: scan))
+            //TODO update db with new receipt
         })
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView(receipts: .constant([Receipt(id: UUID(), cameraScan: ["receipt1"])]))
     }
 }

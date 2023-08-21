@@ -9,9 +9,19 @@ import SwiftUI
 
 @main
 struct ReceiptTrackerApp: App {
+    
+    @StateObject private var appState = AppState()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(receipts: $appState.receipts)
+                .task {
+                    do {
+                        try await appState.load()
+                    }
+                    catch {
+                        print("error loading app state: \(error)")
+                    }
+                }
         }
     }
 }
