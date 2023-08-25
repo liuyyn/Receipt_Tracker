@@ -13,7 +13,8 @@ struct ReceiptTrackerApp: App {
     @StateObject private var appState = AppState()
     var body: some Scene {
         WindowGroup {
-            ContentView(receipts: $appState.receipts)
+            ContentView()
+                .environmentObject(appState)
                 .task {
                     do {
                         try await appState.load()

@@ -11,15 +11,19 @@ import VisionKit
 struct ContentView: View {
     @State private var showScannerSheet = false
     @State var texts: [ScanData] = []
-    @State var scans: [ReceiptScan] = []
-    @Binding var receipts: [Receipt]
-
+    @EnvironmentObject var appState: AppState
+    
     var body: some View {
         NavigationStack {
             VStack {
                 
-                if receipts.count > 0 {
-                    List($receipts) { $receipt in
+                if appState.store.receipts.count > 0 {
+//                    List($receipts) { $receipt in
+//                        NavigationLink(destination: ReceiptView(receipt: $receipt)) {
+//                            Text(receipt.id.uuidString)
+//                        }
+//                    }
+                    List($appState.store.receipts){ $receipt in
                         NavigationLink(destination: ReceiptView(receipt: $receipt)) {
                             Text(receipt.id.uuidString)
                         }
@@ -49,17 +53,14 @@ struct ContentView: View {
             }
             self.showScannerSheet = false
         }, saveReceipts: { scan in
-            self.scans.append(ReceiptScan(cameraScan: scan))
-            
-            //append the new receipt to the state
-            receipts.append(Receipt(cameraScan: scan))
-            //TODO update db with new receipt
+            //append the new receipt to the state and save to db
+            appState.saveReceipt(receipt: Receipt(cameraScan: scan))
         })
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(receipts: .constant([Receipt(id: UUID(), cameraScan: ["receipt1"])]))
+        ContentView()
     }
 }
