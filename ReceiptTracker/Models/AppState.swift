@@ -29,7 +29,7 @@ class AppState: ObservableObject {
             case .success(let receipts):
                 DispatchQueue.main.async {
                     self.store.receipts = receipts
-                    print("self.receipt = \(self.store.receipts)")
+//                    print("self.receipt = \(self.store.receipts)")
                 }
             case .failure(let error):
                 print("Error fetching receipts: \(error)")

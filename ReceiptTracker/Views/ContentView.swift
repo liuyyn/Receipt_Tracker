@@ -10,6 +10,7 @@ import VisionKit
 
 struct ContentView: View {
     @State private var showScannerSheet = false
+    @State private var showSearchView = false
     @State var texts: [ScanData] = []
     @EnvironmentObject var appState: AppState
     
@@ -18,11 +19,6 @@ struct ContentView: View {
             VStack {
                 
                 if appState.store.receipts.count > 0 {
-//                    List($receipts) { $receipt in
-//                        NavigationLink(destination: ReceiptView(receipt: $receipt)) {
-//                            Text(receipt.id.uuidString)
-//                        }
-//                    }
                     List($appState.store.receipts){ $receipt in
                         NavigationLink(destination: ReceiptView(receipt: $receipt)) {
                             Text(receipt.id.uuidString)
@@ -34,7 +30,11 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Scan Receipt")
-            .navigationBarItems(trailing: Button(action: {
+            .navigationBarItems(leading: NavigationLink(destination: {}) {
+                Image(systemName: "magnifyingglass")
+                            .font(.title)
+            },
+                trailing: Button(action: {
                 showScannerSheet = true
             }, label: { Image(systemName: "doc.text.viewfinder")
                     .font(.title)
