@@ -5,6 +5,7 @@ from pymongo_get_database import get_database
 class Receipt(BaseModel):
     id: str
     cameraScan: list
+    content: str = None
 
 app = FastAPI()
 db = get_database()
@@ -27,9 +28,10 @@ async def post_receipt(receipt: Receipt):
     print(receipt.id)
     data = {
         "_id": receipt.id,
-        "cameraScan": receipt.cameraScan
+        "cameraScan": receipt.cameraScan,
+        "content": receipt.content
     }
     coll = db.receipt_info
     coll.insert_one(data)
 
-    return {"id": str(data["_id"]), "cameraScan": data["cameraScan"]}
+    return {"id": receipt.id}

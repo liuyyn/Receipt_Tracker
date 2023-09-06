@@ -25,19 +25,22 @@ class ReceiptScan: Identifiable, ObservableObject {
 struct Receipt: Codable, Identifiable {
     var id: UUID
     var cameraScan: [String]
+    var content: String?
     
-    init(id: UUID = UUID(), cameraScan: [String]) {
+    init(id: UUID = UUID(), cameraScan: [String], content: String? = nil) {
         self.id = id
         self.cameraScan = cameraScan
+        self.content = content
     }
     
     // convert VNDoc and get the uiimage and convert to base64 string
-    init(id: UUID = UUID(), cameraScan: VNDocumentCameraScan) {
+    init(id: UUID = UUID(), cameraScan: VNDocumentCameraScan, content: String? = nil) {
         self.id = id
         self.cameraScan = (0..<cameraScan.pageCount).map { page in
             let imageData = cameraScan.imageOfPage(at: page).pngData()!
             let strBase64 = imageData.base64EncodedString(options: .lineLength64Characters)
             return strBase64
         }
+        self.content = content
     }
 }

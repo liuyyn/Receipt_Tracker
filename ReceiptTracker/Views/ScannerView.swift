@@ -12,9 +12,9 @@ struct ScannerView: UIViewControllerRepresentable {
     
     typealias UIViewControllerType = VNDocumentCameraViewController
     private let completionHandler: ([String]?) -> Void // takes optional set of string and return void
-    private let saveReceipts: (VNDocumentCameraScan) -> Void // saves the images and store them in ContentView variable allocated for that
+    private let saveReceipts: (VNDocumentCameraScan, [String]?) -> Void // saves the images and store them in ContentView variable allocated for that
     
-    init(completion: @escaping ([String]?) -> Void, saveReceipts: @escaping (VNDocumentCameraScan) -> Void) {
+    init(completion: @escaping ([String]?) -> Void, saveReceipts: @escaping (VNDocumentCameraScan, [String]?) -> Void) {
         self.completionHandler = completion
         self.saveReceipts = saveReceipts
     }
@@ -34,20 +34,19 @@ struct ScannerView: UIViewControllerRepresentable {
     
     final class Coordinator: NSObject, VNDocumentCameraViewControllerDelegate {
         private let completionHandler: ([String]?) -> Void
-        private let saveReceipts: (VNDocumentCameraScan) -> Void
+        private let saveReceipts: (VNDocumentCameraScan, [String]?) -> Void
         
-        init(completion: @escaping ([String]?) -> Void, saveReceipts: @escaping (VNDocumentCameraScan) -> Void) {
+        init(completion: @escaping ([String]?) -> Void, saveReceipts: @escaping (VNDocumentCameraScan, [String]?) -> Void) {
             self.completionHandler = completion
             self.saveReceipts = saveReceipts
         }
         
         func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
             let recognizer = TextRecognizer(cameraScan: scan)
-            recognizer.recognizeText(withCompletionHandler: completionHandler)
-            
+            let textPerPage = recognizer.recognizeText(withCompletionHandler: completionHandler)
             // save the images
             DispatchQueue.main.async {
-                self.saveReceipts(scan)
+                self.saveReceipts(scan, textPerPage)
             }
         }
         

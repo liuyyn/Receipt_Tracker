@@ -10,7 +10,6 @@ import VisionKit
 
 struct ContentView: View {
     @State private var showScannerSheet = false
-    @State private var showSearchView = false
     @State var texts: [ScanData] = []
     @EnvironmentObject var appState: AppState
     
@@ -30,7 +29,7 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Scan Receipt")
-            .navigationBarItems(leading: NavigationLink(destination: {}) {
+            .navigationBarItems(leading: NavigationLink(destination: SearchView()) {
                 Image(systemName: "magnifyingglass")
                             .font(.title)
             },
@@ -52,9 +51,10 @@ struct ContentView: View {
                 self.texts.append(newScanData)
             }
             self.showScannerSheet = false
-        }, saveReceipts: { scan in
+        }, saveReceipts: { scan, textPerPage in
             //append the new receipt to the state and save to db
-            appState.saveReceipt(receipt: Receipt(cameraScan: scan))
+            let content: String? = textPerPage?.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
+            appState.saveReceipt(receipt: Receipt(cameraScan: scan, content: content))
         })
     }
 }
