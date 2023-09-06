@@ -43,16 +43,17 @@ async def get_search_results(query_str: str):
     query_str: string to search for
     '''
 
-    query_lst= query_str.split()
-
+    query_lst = query_str.split()
+    regex_query_lst = list(map(lambda x: f".*{x}.*", query_lst))
     coll = db.receipt_info
     res = list(coll.aggregate([
         {
             "$search": { 
                 "index": "default",
-                "text": {
-                    "query": query_lst,
-                    "path": "content"
+                "regex": {
+                    "query": regex_query_lst,
+                    "path": "content",
+                    "allowAnalyzedField": True,
                 }
             }
         }

@@ -75,8 +75,7 @@ class APIService {
     }
     
     func fetchSearchResult(searchStr: String, completion: @escaping (Result<[Receipt], Error>) -> Void) {
-        print(searchStr)
-        guard let baseUrl = URL(string: "http://192.168.2.18:8000/search?query_str=\(searchStr)") else {
+        guard let baseUrl = URL(string: "http://192.168.2.18:8000/search") else {
             print("error: could not create the url")
             return
         }
