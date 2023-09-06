@@ -13,18 +13,27 @@ struct SearchView: View {
     
     var body: some View {
         VStack {
-            Text("search view")
-            
-            if let t = appState.store.receipts[4].content {
-                Text(t)
+            if appState.store.searchResult.count > 0 {
+                List($appState.store.searchResult) { $receipt in
+                    NavigationLink(destination: ReceiptView(receipt: $receipt)) {
+                        Text(receipt.id.uuidString)
+                    }
+
+                }
             }
             else {
-                Text("no receipt text")
+                Text("No receipt match")
             }
         }
         .toolbar() {
             TextField("Search for a receipt", text: $searchString)
-            
+                .padding(7)
+                .background(Color(.systemGray5))
+                .cornerRadius(8)
+                .padding(.horizontal, 10)
+                .onChange(of: searchString) { newSearch in
+                    appState.search(search_str: newSearch)
+                }
         }
     }
 }

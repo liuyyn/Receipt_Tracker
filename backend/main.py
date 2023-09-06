@@ -7,6 +7,7 @@ class Receipt(BaseModel):
     cameraScan: list
     content: str = None
 
+
 app = FastAPI()
 db = get_database()
 
@@ -18,13 +19,12 @@ async def root():
 async def get_receipts():
     coll = db.receipt_info
     res = list(coll.find({}))
-    final_res = map(lambda x: {"id": x["_id"], "cameraScan": x["cameraScan"]}, res)
+    final_res = map(lambda x: {"id": x["_id"], "cameraScan": x["cameraScan"]}, res) # returns a map object at some memory location
     # return [{"id": "87bd6bc2-3d4b-11ee-be56-0242ac120002", "cameraScan": ["receipt1"]}, {"id": "95d5396a-3d4b-11ee-be56-0242ac120002", "cameraScan": ["receipt2"]}]
     return list(final_res)
 
 @app.post("/receipts/")
 async def post_receipt(receipt: Receipt):
-    # TODO save the receipt to the database and return the id
     print(receipt.id)
     data = {
         "_id": receipt.id,
@@ -35,3 +35,29 @@ async def post_receipt(receipt: Receipt):
     coll.insert_one(data)
 
     return {"id": receipt.id}
+
+@app.get("/search")
+async def get_search_results(query_str: str):
+    '''
+    the function should return a list of receipts that match the query_str
+    query_str: string to search for
+    '''
+
+    query_lst= query_str.split()
+
+    coll = db.receipt_info
+    res = list(coll.aggregate([
+        {
+            "$search": { 
+                "index": "default",
+                "text": {
+                    "query": query_lst,
+                    "path": "content"
+                }
+            }
+        }
+    ]))
+    final_res = map(lambda x: {"id": x["_id"], "cameraScan": x["cameraScan"]}, res)
+
+    return list(final_res)
+

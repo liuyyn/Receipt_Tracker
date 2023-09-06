@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AppStateData: Codable {
     var receipts: [Receipt] = []
+    var searchResult: [Receipt] = []
 }
 
 @MainActor
@@ -20,7 +21,7 @@ class AppState: ObservableObject {
      we only call the api service in the app state - the app state talks to the api and the views talk to the app state
      */
     @Published var store: AppStateData = AppStateData()
-
+    
     func load() async throws {
         // call the service that loads the receipts from db
         APIService.shared.fetchReceipts(completion: { result in
@@ -29,7 +30,6 @@ class AppState: ObservableObject {
             case .success(let receipts):
                 DispatchQueue.main.async {
                     self.store.receipts = receipts
-//                    print("self.receipt = \(self.store.receipts)")
                 }
             case .failure(let error):
                 print("Error fetching receipts: \(error)")
@@ -40,5 +40,18 @@ class AppState: ObservableObject {
     func saveReceipt(receipt: Receipt) {
         self.store.receipts.append(receipt)
         APIService.shared.saveReceipt(receipt: receipt)
+    }
+    
+    func search(search_str: String) {
+        APIService.shared.fetchSearchResult(searchStr: search_str, completion: { search_result in
+            switch search_result {
+            case .success(let receipts):
+                DispatchQueue.main.async {
+                    self.store.searchResult = receipts
+                }
+            case .failure(let error):
+                print("Error fetching receit: \(error)")
+            }
+        })
     }
 }

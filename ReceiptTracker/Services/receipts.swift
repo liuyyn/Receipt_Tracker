@@ -73,4 +73,50 @@ class APIService {
             print("Error saving the receipt: \(error)")
         }
     }
+    
+    func fetchSearchResult(searchStr: String, completion: @escaping (Result<[Receipt], Error>) -> Void) {
+        print(searchStr)
+        guard let baseUrl = URL(string: "http://192.168.2.18:8000/search?query_str=\(searchStr)") else {
+            print("error: could not create the url")
+            return
+        }
+        
+        // query items allows us to build url safely
+        var components = URLComponents(url: baseUrl, resolvingAgainstBaseURL: false)!
+        components.queryItems = [
+            URLQueryItem(name: "query_str", value: searchStr)
+        ]
+        
+        guard let url = components.url else {
+            print("error: could not build the url")
+            return
+        }
+
+        // Create a GET request with the constructed URL
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
+        URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if let error = error {
+                print("Error while getting the search result: \(error)")
+                completion(.failure(error))
+                return
+            }
+            
+            if let data = data {
+                // Process the response data here
+                
+                do {
+                    let search_result = try JSONDecoder().decode([Receipt].self, from: data)
+                    completion(.success(search_result))
+                }
+                catch {
+                    print("Could not process the search result: \(error)")
+                    completion(.failure(error))
+                }
+            }
+        }
+        .resume()
+
+    }
 }
