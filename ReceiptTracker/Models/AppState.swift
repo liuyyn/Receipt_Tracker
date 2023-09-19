@@ -54,4 +54,8 @@ class AppState: ObservableObject {
             }
         })
     }
+    
+    func clearSearch() {
+        store.searchResult = []
+    }
 }

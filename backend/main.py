@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 from pydantic import UUID1, BaseModel
 from pymongo_get_database import get_database
+import os
+from read_receipt import read_receipt, analyze_receipt
+from utils import compress_image
 
 class Receipt(BaseModel):
     id: str
@@ -26,13 +29,17 @@ async def get_receipts():
 @app.post("/receipts/")
 async def post_receipt(receipt: Receipt):
     print(receipt.id)
+    # compress the image
+    img_data = compress_image(receipt.cameraScan[0])
     data = {
         "_id": receipt.id,
-        "cameraScan": receipt.cameraScan,
+        "cameraScan": img_data["compressed_img"],
         "content": receipt.content
     }
     coll = db.receipt_info
     coll.insert_one(data)
+
+    await analyze_receipt(img_data["png_image"])
 
     return {"id": receipt.id}
 

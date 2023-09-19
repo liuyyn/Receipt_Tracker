@@ -35,5 +35,9 @@ struct SearchView: View {
                     appState.search(search_str: newSearch)
                 }
         }
+        .onDisappear() {
+            appState.clearSearch()
+            searchString = ""
+        }
     }
 }
