@@ -33,13 +33,16 @@ async def post_receipt(receipt: Receipt):
     img_data = compress_image(receipt.cameraScan[0])
     data = {
         "_id": receipt.id,
-        "cameraScan": img_data["compressed_img"],
+        "cameraScan": [img_data["compressed_img"]],
         "content": receipt.content
     }
     coll = db.receipt_info
     coll.insert_one(data)
 
-    await analyze_receipt(img_data["png_image"])
+    # read the receipt fields and store in db
+    receipt_fields = await analyze_receipt(img_data["png_image"])
+    rfields_coll = db.receipt_fields
+    rfields_coll.insert_one({**{"_id": receipt.id}, **receipt_fields.model_dump()})
 
     return {"id": receipt.id}
 
