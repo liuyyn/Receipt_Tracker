@@ -1,9 +1,10 @@
 from fastapi import FastAPI
-from pydantic import UUID1, BaseModel
+from pydantic import BaseModel
 from pymongo_get_database import get_database
 import os
-from read_receipt import read_receipt, analyze_receipt
+from read_receipt import analyze_receipt
 from utils import compress_image
+from celery_app import save_receipt_fields
 
 class Receipt(BaseModel):
     id: str
@@ -31,20 +32,20 @@ async def post_receipt(receipt: Receipt):
     print(receipt.id)
     # compress the image
     img_data = compress_image(receipt.cameraScan[0])
+
     data = {
         "_id": receipt.id,
         "cameraScan": [img_data["compressed_img"]],
         "content": receipt.content
     }
+    print(type(data["cameraScan"]))
     coll = db.receipt_info
     coll.insert_one(data)
 
-    # read the receipt fields and store in db
-    receipt_fields = await analyze_receipt(img_data["png_image"])
-    rfields_coll = db.receipt_fields
-    rfields_coll.insert_one({**{"_id": receipt.id}, **receipt_fields.model_dump()})
+    # read the receipt fields and store in db using celery (we dont need to wait for this to finish - calling the azure service takes some time)
+    save_receipt_fields.delay(receipt.id, img_data["png_image"])
 
-    return {"id": receipt.id}
+    return {"id": receipt.id}    
 
 @app.get("/search")
 async def get_search_results(query_str: str):

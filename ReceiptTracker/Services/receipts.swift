@@ -34,7 +34,7 @@ class APIService {
         }.resume()
     }
     
-    func saveReceipt(receipt: Receipt) {
+    func saveReceipt(receipt: Receipt, completion: @escaping (Result<Bool, Error>) -> Void) {
         // TODO save the receipt to the db
         guard let url = URL(string: "http://192.168.2.18:8000/receipts/") else {
             return
@@ -61,20 +61,27 @@ class APIService {
                 if let data = data {
                     do {
                         let responseModel = try JSONSerialization.jsonObject(with: data, options: [])
+                        completion(.success(true))
                         print("response model: \(responseModel)")
                     }
                     catch {
+                        completion(.failure(error))
                         print("error decoding json: \(error)")
                     }
                 }
             }.resume()
         }
         catch {
+            completion(.failure(error))
             print("Error saving the receipt: \(error)")
         }
     }
     
     func fetchSearchResult(searchStr: String, completion: @escaping (Result<[Receipt], Error>) -> Void) {
+        if !(searchStr.count > 0){
+            return
+        }
+        
         guard let baseUrl = URL(string: "http://192.168.2.18:8000/search") else {
             print("error: could not create the url")
             return

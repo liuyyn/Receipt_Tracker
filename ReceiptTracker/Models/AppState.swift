@@ -38,8 +38,17 @@ class AppState: ObservableObject {
     }
     
     func saveReceipt(receipt: Receipt) {
-        self.store.receipts.append(receipt)
-        APIService.shared.saveReceipt(receipt: receipt)
+        APIService.shared.saveReceipt(receipt: receipt) { result in
+            switch result {
+            case .success(_):
+                DispatchQueue.main.async {
+                    self.store.receipts.append(receipt)
+                }
+            case .failure(let error):
+                print("Error saving the receipt: \(error)")
+            }
+            
+        }
     }
     
     func search(search_str: String) {
