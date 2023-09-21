@@ -2,6 +2,7 @@ import requests
 import os 
 from pydantic import BaseModel
 from typing import List
+from datetime import datetime
 from azure.ai.formrecognizer import DocumentAnalysisClient
 from azure.core.credentials import AzureKeyCredential
 
@@ -17,7 +18,7 @@ class ReceiptFields(BaseModel):
     merchantName: str = None
     # MerchantAddress: str
     total: float = 0.0
-    transactionDate: str = None
+    transactionDate: datetime = None
     items: List[Item] = []
     subtotal: float = 0.0
     totalTax: float = 0.0
@@ -59,7 +60,9 @@ def build_receipt_object(receipts):
             r.total = total.value
         transaction_date = receipt.fields.get("TransactionDate")
         if transaction_date:
-            r.transactionDate = str(transaction_date.value)
+            # convert to datetime object
+            strdate = str(transaction_date.value)
+            r.transactionDate = datetime.strptime(strdate, "%Y-%m-%d")
         for _, item in enumerate(receipt.fields.get("Items").value):
             new_item = Item()
             item_description = item.value.get("Description")
